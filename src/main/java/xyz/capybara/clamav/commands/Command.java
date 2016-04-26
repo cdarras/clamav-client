@@ -44,11 +44,13 @@ public abstract class Command<T> {
         ByteBuffer rawResponsePart = ByteBuffer.allocate(32);
 
         for (int read = socketChannel.read(rawResponsePart); read > -1; read = socketChannel.read(rawResponsePart)) {
-            responseStringBuilder.append(new String(rawResponsePart.array(), StandardCharsets.US_ASCII));
+            String rawResponsePartString = new String(rawResponsePart.array(), StandardCharsets.US_ASCII);
+            rawResponsePartString = rawResponsePartString.substring(0, read);
+            responseStringBuilder.append(rawResponsePartString);
             rawResponsePart = ByteBuffer.allocate(32);
         }
 
-        String responseString = normalizeResponseString(responseStringBuilder.toString());
+        String responseString = removeResponseTerminator(responseStringBuilder.toString());
 
         if (responseString.equals(UNKNOWN_COMMAND)) {
             throw new UnknownCommandException(getCommandString());
@@ -59,18 +61,13 @@ public abstract class Command<T> {
         return parseResponse(responseString);
     }
 
-    private String normalizeResponseString(String responseString) {
-        responseString = responseString.replaceAll("\0+", "");
-        if (getFormat() == CommandFormat.NEW_LINE) {
-            responseString = responseString.substring(0, responseString.lastIndexOf('\n'));
-        }
-
-        return responseString;
+    private String removeResponseTerminator(String responseString) {
+        return responseString.substring(0, responseString.lastIndexOf(getFormat().getTerminator()));
     }
 
     protected abstract T parseResponse(String responseString);
 
-    protected enum CommandFormat {
+    public enum CommandFormat {
         NULL_CHAR('z', '\0'),
         NEW_LINE('n', '\n');
 
@@ -80,6 +77,17 @@ public abstract class Command<T> {
         CommandFormat(char prefix, char terminator) {
             this.prefix = prefix;
             this.terminator = terminator;
+        }
+
+        public static CommandFormat fromPrefix(char prefix) {
+            CommandFormat format = null;
+            switch (prefix) {
+                case 'z':
+                    format = NULL_CHAR;
+                case 'n':
+                    format = NEW_LINE;
+            }
+            return format;
         }
     }
 }
