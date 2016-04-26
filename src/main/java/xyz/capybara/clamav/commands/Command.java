@@ -1,5 +1,6 @@
 package xyz.capybara.clamav.commands;
 
+import xyz.capybara.clamav.exceptions.CommunicationException;
 import xyz.capybara.clamav.exceptions.UnknownCommandException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -13,15 +14,17 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public abstract class Command<T> {
 
-    public static final String UNKNOWN_COMMAND = "UNKNOWN COMMAND";
+    private static final String UNKNOWN_COMMAND = "UNKNOWN COMMAND";
 
     public abstract String getCommandString();
 
-    public T send(InetSocketAddress server) throws IOException {
+    public T send(InetSocketAddress server) {
         try (SocketChannel socketChannel = SocketChannel.open(server)) {
             socketChannel.write(getRawCommand());
 
             return readResponse(socketChannel);
+        } catch (IOException e) {
+            throw new CommunicationException(e);
         }
     }
 

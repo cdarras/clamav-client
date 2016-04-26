@@ -1,21 +1,21 @@
 package xyz.capybara.clamav;
 
-import xyz.capybara.clamav.commands.Stats;
-import xyz.capybara.clamav.commands.Version;
-import xyz.capybara.clamav.commands.scan.InStream;
+import xyz.capybara.clamav.commands.scan.ContScan;
 import xyz.capybara.clamav.commands.scan.result.ScanResult;
+import xyz.capybara.clamav.configuration.Platform;
+import xyz.capybara.clamav.exceptions.ClamavException;
+import xyz.capybara.clamav.exceptions.UnsupportedCommandException;
 import xyz.capybara.clamav.commands.Command;
 import xyz.capybara.clamav.commands.Ping;
 import xyz.capybara.clamav.commands.Reload;
 import xyz.capybara.clamav.commands.Shutdown;
+import xyz.capybara.clamav.commands.Stats;
+import xyz.capybara.clamav.commands.Version;
 import xyz.capybara.clamav.commands.VersionCommands;
-import xyz.capybara.clamav.commands.scan.ContScan;
+import xyz.capybara.clamav.commands.scan.InStream;
 import xyz.capybara.clamav.commands.scan.MultiScan;
 import xyz.capybara.clamav.commands.scan.Scan;
-import xyz.capybara.clamav.configuration.Platform;
-import xyz.capybara.clamav.exceptions.UnsupportedCommandException;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.nio.file.Path;
@@ -54,23 +54,23 @@ public class ClamavClient {
         this.serverPlatform = serverPlatform;
     }
 
-    public void ping() {
+    public void ping() throws ClamavException {
         sendCommand(new Ping());
     }
 
-    public String version() {
+    public String version() throws ClamavException {
         return sendCommand(new Version());
     }
 
-    public String stats() {
+    public String stats() throws ClamavException {
         return sendCommand(new Stats());
     }
 
-    public void reloadVirusDatabases() {
+    public void reloadVirusDatabases() throws ClamavException {
         sendCommand(new Reload());
     }
 
-    public void shutdownServer() {
+    public void shutdownServer() throws ClamavException {
         sendCommand(new Shutdown());
     }
 
@@ -79,7 +79,7 @@ public class ClamavClient {
      * @param inputStream
      * @return
      */
-    public ScanResult scan(InputStream inputStream) {
+    public ScanResult scan(InputStream inputStream) throws ClamavException {
         return sendCommand(new InStream(inputStream));
     }
 
@@ -89,7 +89,7 @@ public class ClamavClient {
      * @param path
      * @return
      */
-    public ScanResult scan(Path path) {
+    public ScanResult scan(Path path) throws ClamavException {
         return scan(path, false);
     }
 
@@ -100,7 +100,7 @@ public class ClamavClient {
      * @param continueScan
      * @return
      */
-    public ScanResult scan(Path path, boolean continueScan) {
+    public ScanResult scan(Path path, boolean continueScan) throws ClamavException {
         if (continueScan) {
             return sendCommand(new ContScan(serverPlatform.toServerPath(path)));
         } else {
@@ -115,29 +115,25 @@ public class ClamavClient {
      * @param path
      * @return
      */
-    public ScanResult parallelScan(Path path) {
+    public ScanResult parallelScan(Path path) throws ClamavException {
         return sendCommand(new MultiScan(serverPlatform.toServerPath(path)));
     }
 
-    private List<String> getAvailableCommands() throws IOException {
+    private List<String> getAvailableCommands() {
         if (availableCommands == null) {
             availableCommands = new VersionCommands().send(server);
         }
-
         return availableCommands;
     }
 
-    private <T> T sendCommand(Command<T> command) {
+    private <T> T sendCommand(Command<T> command) throws ClamavException {
         try {
-            if (!getAvailableCommands().contains(command.getCommandString())) {
-                throw new UnsupportedCommandException(command.getCommandString());
+            if (getAvailableCommands().contains(command.getCommandString())) {
+                return command.send(server);
             }
-
-            return command.send(server);
-        } catch (IOException e) {
-            throw new IllegalStateException(String.format("Unable to send the %s command to the server",
-                    command.getCommandString()),
-                    e);
+            throw new UnsupportedCommandException(command.getCommandString());
+        } catch (Exception cause) {
+            throw new ClamavException(cause);
         }
     }
 }
