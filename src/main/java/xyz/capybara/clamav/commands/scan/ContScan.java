@@ -1,7 +1,5 @@
 package xyz.capybara.clamav.commands.scan;
 
-import xyz.capybara.clamav.commands.Command;
-
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
@@ -14,8 +12,8 @@ public class ContScan extends ScanCommand {
     }
 
     @Override
-    protected Command.CommandFormat getFormat() {
-        return Command.CommandFormat.NEW_LINE;
+    protected CommandFormat getFormat() {
+        return CommandFormat.NEW_LINE;
     }
 
     @Override

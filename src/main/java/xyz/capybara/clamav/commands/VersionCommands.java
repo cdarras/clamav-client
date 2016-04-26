@@ -3,10 +3,10 @@ package xyz.capybara.clamav.commands;
 import xyz.capybara.clamav.exceptions.InvalidResponseException;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class VersionCommands extends Command<List<String>> {
+public class VersionCommands extends Command<Collection<String>> {
 
     private static final String COMMANDS_START_TAG = "| COMMANDS:";
 
@@ -21,7 +21,7 @@ public class VersionCommands extends Command<List<String>> {
     }
 
     @Override
-    protected List<String> parseResponse(String responseString) {
+    protected Collection<String> parseResponse(String responseString) {
         int commandsStartPos = responseString.indexOf(COMMANDS_START_TAG);
 
         if (commandsStartPos == -1) {

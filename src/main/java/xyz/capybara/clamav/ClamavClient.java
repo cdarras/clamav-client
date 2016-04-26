@@ -1,25 +1,20 @@
 package xyz.capybara.clamav;
 
+import xyz.capybara.clamav.commands.*;
+import xyz.capybara.clamav.commands.Shutdown;
 import xyz.capybara.clamav.commands.scan.ContScan;
+import xyz.capybara.clamav.commands.scan.InStream;
+import xyz.capybara.clamav.commands.scan.MultiScan;
+import xyz.capybara.clamav.commands.scan.Scan;
 import xyz.capybara.clamav.commands.scan.result.ScanResult;
 import xyz.capybara.clamav.configuration.Platform;
 import xyz.capybara.clamav.exceptions.ClamavException;
 import xyz.capybara.clamav.exceptions.UnsupportedCommandException;
-import xyz.capybara.clamav.commands.Command;
-import xyz.capybara.clamav.commands.Ping;
-import xyz.capybara.clamav.commands.Reload;
-import xyz.capybara.clamav.commands.Shutdown;
-import xyz.capybara.clamav.commands.Stats;
-import xyz.capybara.clamav.commands.Version;
-import xyz.capybara.clamav.commands.VersionCommands;
-import xyz.capybara.clamav.commands.scan.InStream;
-import xyz.capybara.clamav.commands.scan.MultiScan;
-import xyz.capybara.clamav.commands.scan.Scan;
 
 import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Collection;
 
 public class ClamavClient {
     public static final int DEFAULT_SERVER_PORT = 3310;
@@ -27,7 +22,7 @@ public class ClamavClient {
 
     private InetSocketAddress server;
     private Platform serverPlatform;
-    private List<String> availableCommands;
+    private Collection<String> availableCommands;
 
     public ClamavClient(String serverHostname) {
         this(serverHostname, DEFAULT_SERVER_PORT);
@@ -119,7 +114,7 @@ public class ClamavClient {
         return sendCommand(new MultiScan(serverPlatform.toServerPath(path)));
     }
 
-    private List<String> getAvailableCommands() {
+    private Collection<String> getAvailableCommands() {
         if (availableCommands == null) {
             availableCommands = new VersionCommands().send(server);
         }
