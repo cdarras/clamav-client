@@ -1,5 +1,6 @@
 package xyz.capybara.clamav;
 
+import lombok.Getter;
 import xyz.capybara.clamav.commands.*;
 import xyz.capybara.clamav.commands.Shutdown;
 import xyz.capybara.clamav.commands.scan.ContScan;
@@ -23,7 +24,9 @@ public class ClamavClient {
     public static final int DEFAULT_SERVER_PORT = 3310;
     public static final Platform DEFAULT_SERVER_PLATFORM = Platform.JVM_PLATFORM;
 
+    @Getter
     private InetSocketAddress server;
+    @Getter
     private Platform serverPlatform;
     private Collection<String> availableCommands;
 
@@ -219,7 +222,7 @@ public class ClamavClient {
 
     private <T> T sendCommand(Command<T> command) throws ClamavException {
         try {
-            if (getAvailableCommands().contains(command.getCommandString())) {
+            if (getAvailableCommands() != null && getAvailableCommands().contains(command.getCommandString())) {
                 return command.send(server);
             }
             throw new UnsupportedCommandException(command.getCommandString());
