@@ -5,7 +5,8 @@ import java.nio.file.Path;
 
 public enum Platform {
     UNIX('/'),
-    WINDOWS('\\');
+    WINDOWS('\\'),
+    JVM_PLATFORM(File.separatorChar);
 
     private char separator;
 

@@ -23,7 +23,7 @@ import java.util.List;
 
 public class ClamavClient {
     public static final int DEFAULT_SERVER_PORT = 3310;
-    public static final Platform DEFAULT_SERVER_PLATFORM = Platform.UNIX;
+    public static final Platform DEFAULT_SERVER_PLATFORM = Platform.JVM_PLATFORM;
 
     private InetSocketAddress server;
     private Platform serverPlatform;
