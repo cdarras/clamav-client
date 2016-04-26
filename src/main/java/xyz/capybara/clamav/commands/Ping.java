@@ -22,7 +22,7 @@ public class Ping extends Command<Void> {
             throw new InvalidResponseException(responseString);
         }
 
-        log.info(responseString);
+        log.debug(responseString);
 
         return null;
     }
