@@ -84,8 +84,10 @@ public abstract class Command<T> {
             switch (prefix) {
                 case 'z':
                     format = NULL_CHAR;
+                    break;
                 case 'n':
                     format = NEW_LINE;
+                    break;
             }
             return format;
         }
