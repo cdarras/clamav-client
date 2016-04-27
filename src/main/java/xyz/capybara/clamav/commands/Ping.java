@@ -6,9 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Ping extends Command<Void> {
 
+    public static final String COMMAND = "PING";
+
     @Override
     public String getCommandString() {
-        return "PING";
+        return COMMAND;
     }
 
     @Override

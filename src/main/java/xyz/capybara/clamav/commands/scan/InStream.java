@@ -13,6 +13,7 @@ import java.nio.channels.SocketChannel;
 
 public class InStream extends ScanCommand {
 
+    public static final String COMMAND = "INSTREAM";
     private static final int CHUNK_SIZE = 2048;
 
     private InputStream inputStream;
@@ -23,7 +24,7 @@ public class InStream extends ScanCommand {
 
     @Override
     public String getCommandString() {
-        return "INSTREAM";
+        return COMMAND;
     }
 
     @Override

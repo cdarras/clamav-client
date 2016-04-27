@@ -7,6 +7,8 @@ import java.nio.charset.StandardCharsets;
 
 public class MultiScan extends ScanCommand {
 
+    public static final String COMMAND = "MULTISCAN";
+
     private String path;
 
     public MultiScan(String path) {
@@ -15,7 +17,7 @@ public class MultiScan extends ScanCommand {
 
     @Override
     public String getCommandString() {
-        return "MULTISCAN";
+        return COMMAND;
     }
 
     @Override

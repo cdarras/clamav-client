@@ -6,9 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Reload extends Command<Void> {
 
+    public static final String COMMAND = "RELOAD";
+
     @Override
     public String getCommandString() {
-        return "RELOAD";
+        return COMMAND;
     }
 
     @Override

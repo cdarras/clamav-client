@@ -8,11 +8,12 @@ import java.util.stream.Collectors;
 
 public class VersionCommands extends Command<Collection<String>> {
 
+    public static final String COMMAND = "VERSIONCOMMANDS";
     private static final String COMMANDS_START_TAG = "| COMMANDS:";
 
     @Override
     public String getCommandString() {
-        return "VERSIONCOMMANDS";
+        return COMMAND;
     }
 
     @Override

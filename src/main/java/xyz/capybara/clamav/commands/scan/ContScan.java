@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 
 public class ContScan extends ScanCommand {
 
+    public static final String COMMAND = "CONTSCAN";
+
     private String path;
 
     public ContScan(String path) {
@@ -12,13 +14,13 @@ public class ContScan extends ScanCommand {
     }
 
     @Override
-    protected CommandFormat getFormat() {
-        return CommandFormat.NEW_LINE;
+    public String getCommandString() {
+        return COMMAND;
     }
 
     @Override
-    public String getCommandString() {
-        return "CONTSCAN";
+    protected CommandFormat getFormat() {
+        return CommandFormat.NEW_LINE;
     }
 
     @Override

@@ -2,9 +2,11 @@ package xyz.capybara.clamav.commands;
 
 public class Version extends Command<String> {
 
+    public static final String COMMAND = "VERSION";
+
     @Override
     public String getCommandString() {
-        return "VERSION";
+        return COMMAND;
     }
 
     @Override

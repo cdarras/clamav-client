@@ -7,6 +7,8 @@ import java.nio.charset.StandardCharsets;
 
 public class Scan extends ScanCommand {
 
+    public static final String COMMAND = "SCAN";
+
     private String path;
 
     public Scan(String path) {
@@ -15,7 +17,7 @@ public class Scan extends ScanCommand {
 
     @Override
     public String getCommandString() {
-        return "SCAN";
+        return COMMAND;
     }
 
     @Override

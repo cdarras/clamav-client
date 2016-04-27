@@ -2,9 +2,11 @@ package xyz.capybara.clamav.commands;
 
 public class Stats extends Command<String> {
 
+    public static final String COMMAND = "STATS";
+
     @Override
     public String getCommandString() {
-        return "STATS";
+        return COMMAND;
     }
 
     @Override

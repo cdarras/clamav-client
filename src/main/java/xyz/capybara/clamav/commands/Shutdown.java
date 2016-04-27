@@ -5,9 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Shutdown extends Command<Void> {
 
+    public static final String COMMAND = "SHUTDOWN";
+
     @Override
     public String getCommandString() {
-        return "SHUTDOWN";
+        return COMMAND;
     }
 
     @Override
