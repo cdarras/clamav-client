@@ -24,6 +24,11 @@ public enum Platform {
     }
 
     public String toServerPath(Path path) {
-        return path.toString().replace(File.separatorChar, separator);
+        if (this == UNIX) {
+            return path.toString().replace(WINDOWS.separator, UNIX.separator);
+        } else if (this == WINDOWS) {
+            return path.toString().replace(UNIX.separator, WINDOWS.separator);
+        }
+        return path.toString();
     }
 }
