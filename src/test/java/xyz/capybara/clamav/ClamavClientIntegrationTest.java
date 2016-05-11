@@ -44,7 +44,6 @@ public class ClamavClientIntegrationTest {
         testServerThread.interrupt();
     }
 
-    @Test
     public void should_ping() {
         // Given
         ClamavException exception = null;
