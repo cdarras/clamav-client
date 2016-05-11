@@ -31,7 +31,7 @@ public class ClamavClient {
     private Collection<String> availableCommands;
 
     /**+
-     * Creates a ClamavClient which will connect to ClamAV on the given hostname.
+     * Creates a ClamavClient which will connect to the ClamAV daemon on the given hostname.
      * Default values:
      * <ul>
      *     <li>Port: 3310</li>
@@ -45,7 +45,7 @@ public class ClamavClient {
     }
 
     /**
-     * Creates a ClamavClient which will connect to ClamAV on the given hostname and port.
+     * Creates a ClamavClient which will connect to the ClamAV daemon on the given hostname and port.
      * Default values:
      * <ul>
      *     <li>Platform: the one the JVM is running on</li>
@@ -59,7 +59,7 @@ public class ClamavClient {
     }
 
     /**
-     * Creates a ClamavClient which will connect to ClamAV on the given hostname running on the given platform.
+     * Creates a ClamavClient which will connect to the ClamAV daemon on the given hostname running on the given platform.
      * Default values:
      * <ul>
      *     <li>Port: 3310</li>
@@ -75,7 +75,7 @@ public class ClamavClient {
     }
 
     /**
-     * Creates a ClamavClient which will connect to ClamAV on the given hostname and port running on the given platform.
+     * Creates a ClamavClient which will connect to the ClamAV daemon on the given hostname and port running on the given platform.
      *
      * @param serverHostname Server hostname
      * @param serverPort     Server port
@@ -88,7 +88,7 @@ public class ClamavClient {
     }
 
     /**
-     * Creates a ClamavClient which will connect to ClamAV on the given socket address.
+     * Creates a ClamavClient which will connect to the ClamAV daemon on the given socket address.
      * Default values:
      * <ul>
      *     <li>Platform: the one the JVM is running on</li>
@@ -101,7 +101,7 @@ public class ClamavClient {
     }
 
     /**
-     * Creates a ClamavClient which will connect to ClamAV on the given socket address running on the given platform.
+     * Creates a ClamavClient which will connect to the ClamAV daemon on the given socket address running on the given platform.
      *
      * @param server         Server socket address (IP address and port or hostname and port)
      * @param serverPlatform Server platform
@@ -114,8 +114,8 @@ public class ClamavClient {
     }
 
     /**
-     * Pings the ClamAV service. If a correct response has been sent, the method simply returns.
-     * Otherwise, an exception is thrown.
+     * Pings the ClamAV daemon. If a correct response has been received, the method simply returns.
+     * Otherwise, a {@link ClamavException} is thrown.
      *
      * @throws ClamavException Exception holding the real cause of malfunction
      */
@@ -124,9 +124,9 @@ public class ClamavClient {
     }
 
     /**
-     * Requests the version of the ClamAV service
+     * Requests the version of the ClamAV daemon
      *
-     * @return version of the ClamAV service
+     * @return version of the ClamAV daemon
      * @throws ClamavException Exception holding the real cause of malfunction
      */
     public String version() throws ClamavException {
@@ -134,9 +134,9 @@ public class ClamavClient {
     }
 
     /**
-     * Requests stats from the ClamAV service
+     * Requests stats from the ClamAV daemon
      *
-     * @return multilined String holding various stats given by the ClamAV service
+     * @return multilined String holding various stats given by the ClamAV daemon
      * @throws ClamavException Exception holding the real cause of malfunction
      */
     public String stats() throws ClamavException {
@@ -144,7 +144,7 @@ public class ClamavClient {
     }
 
     /**
-     *
+     * Triggers the virus databases reloading by the ClamAV daemon
      *
      * @throws ClamavException Exception holding the real cause of malfunction
      */
@@ -153,7 +153,7 @@ public class ClamavClient {
     }
 
     /**
-     * Shutdowns the ClamAV service on the server
+     * Immediately shutdowns the ClamAV daemon
      *
      * @throws ClamavException Exception holding the real cause of malfunction
      */
@@ -173,9 +173,9 @@ public class ClamavClient {
     }
 
     /**
-     * Scans a file/directory on the server filesystem and sends a response as soon as a virus has been found.
+     * Scans a file/directory on the filesystem of the ClamAV daemon and sends a response as soon as a virus has been found.
      *
-     * @param path absolute path to the file/directory on the server
+     * @param path absolute path to the file/directory on the filesystem of the ClamAV daemon
      * @return result of the scan
      * @throws ClamavException Exception holding the real cause of malfunction
      */
@@ -184,10 +184,10 @@ public class ClamavClient {
     }
 
     /**
-     * Scans a file/directory on the server filesystem and may continue the scan to the end
+     * Scans a file/directory on the filesystem of the ClamAV daemon and may continue the scan to the end
      * even if a virus has been found, depending on the <code>continueScan</code> argument.
      *
-     * @param path         absolute path to the file/directory on the server
+     * @param path         absolute path to the file/directory on the filesystem of the ClamAV daemon
      * @param continueScan continue the scan to the end even if the virus has been found
      * @return result of the scan
      * @throws ClamavException Exception holding the real cause of malfunction
@@ -201,11 +201,11 @@ public class ClamavClient {
     }
 
     /**
-     * Scans a file/directory on the server filesystem and will continue the scan to the end
+     * Scans a file/directory on the filesystem of the ClamAV daemon and will continue the scan to the end
      * even if a virus has been found.
      * This method may improve performances on SMP systems by performing a multi-threaded scan.
      *
-     * @param path absolute path to the file/directory on the server
+     * @param path absolute path to the file/directory on the filesystem of the ClamAV daemon
      * @return result of the scan
      * @throws ClamavException Exception holding the real cause of malfunction
      */
