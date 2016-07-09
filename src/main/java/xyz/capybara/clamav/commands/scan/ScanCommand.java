@@ -45,7 +45,9 @@ public abstract class ScanCommand extends Command<ScanResult> {
             Map<String, Collection<String>> foundViruses = Arrays.stream(responseString.split("\n"))
                     .map(line -> {
                         Matcher matcher = RESPONSE_VIRUS_FOUND_LINE.matcher(line);
-                        assert matcher.matches();
+                        if (!matcher.matches()) {
+                            throw new InvalidResponseException(responseString);
+                        }
                         return new VirusInfo(matcher.group("filePath"), matcher.group("virus"));
                     })
                     .collect(new VirusInfoCollector());
