@@ -6,6 +6,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,7 +24,7 @@ public class ScanResult {
 
     @NonNull
     private Status status;
-    private Map<String, Collection<String>> foundViruses;
+    private Map<String, Collection<String>> foundViruses = new HashMap<>();
 
     public enum Status {
         OK, VIRUS_FOUND
