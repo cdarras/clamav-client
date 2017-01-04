@@ -37,24 +37,25 @@ public abstract class ScanCommand extends Command<ScanResult> {
 
     @Override
     protected ScanResult parseResponse(String responseString) {
-        if (RESPONSE_OK.matcher(responseString).matches()) {
-            return new ScanResult(ScanResult.Status.OK);
-        }
-        if (RESPONSE_VIRUS_FOUND.matcher(responseString).find()) {
-            // add every found viruses to the scan result, grouped by infected file
-            Map<String, Collection<String>> foundViruses = Arrays.stream(responseString.split("\n"))
-                    .map(line -> {
-                        Matcher matcher = RESPONSE_VIRUS_FOUND_LINE.matcher(line);
-                        if (!matcher.matches()) {
-                            throw new InvalidResponseException(responseString);
-                        }
-                        return new VirusInfo(matcher.group("filePath"), matcher.group("virus"));
-                    })
-                    .collect(new VirusInfoCollector());
-            return new ScanResult(ScanResult.Status.VIRUS_FOUND, foundViruses);
-        }
-        if (RESPONSE_ERROR.matcher(responseString).matches()) {
-            throw new ScanFailureException(responseString);
+        try {
+            if (RESPONSE_VIRUS_FOUND.matcher(responseString).find()) {
+                // add every found viruses to the scan result, grouped by infected file
+                Map<String, Collection<String>> foundViruses = Arrays.stream(responseString.split("\n"))
+                        .map(line -> {
+                            Matcher matcher = RESPONSE_VIRUS_FOUND_LINE.matcher(line);
+                            if (!matcher.matches()) {
+                                throw new InvalidResponseException(responseString);
+                            }
+                            return new VirusInfo(matcher.group("filePath"), matcher.group("virus"));
+                        })
+                        .collect(new VirusInfoCollector());
+                return new ScanResult(ScanResult.Status.VIRUS_FOUND, foundViruses);
+            }
+            if (RESPONSE_ERROR.matcher(responseString).matches()) {
+                throw new ScanFailureException(responseString);
+            }
+        } catch (IllegalStateException e) {
+            throw new InvalidResponseException(responseString);
         }
 
         throw new InvalidResponseException(responseString);
@@ -71,7 +72,7 @@ public abstract class ScanCommand extends Command<ScanResult> {
 
         @Override
         public Supplier<Map<String, Collection<String>>> supplier() {
-            return () -> new HashMap<>();
+            return HashMap::new;
         }
 
         @Override
