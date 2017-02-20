@@ -4,7 +4,7 @@ A simple yet efficient Java client library for the [ClamAV antivirus](https://ww
 
 ## Pre-requisites
 
-This library requires a JDK version 8.
+This library requires a JDK version 6.
 
 ## Installing
 
@@ -15,7 +15,7 @@ Add this dependency to the `<dependencies>` section of your `pom.xml` file:
 <dependency>
     <groupId>xyz.capybara</groupId>
     <artifactId>clamav-client</artifactId>
-    <version>1.0.4</version>
+    <version>2.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -23,7 +23,7 @@ Add this dependency to the `<dependencies>` section of your `pom.xml` file:
 Add this dependency to the `dependencies` section of your `build.gradle` file:
 
 ```gradle
-compile 'xyz.capybara:clamav-client:1.0.4'
+compile 'xyz.capybara:clamav-client:2.0.0-SNAPSHOT'
 ```
 
 ### Manually
