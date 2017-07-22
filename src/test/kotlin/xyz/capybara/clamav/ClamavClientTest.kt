@@ -1,0 +1,81 @@
+package xyz.capybara.clamav
+
+import org.junit.Test
+
+import java.net.InetSocketAddress
+
+import org.assertj.core.api.BDDAssertions.then
+
+class ClamavClientTest {
+
+    @Test
+    fun `should create a ClamavClient for the given hostname`() {
+        // Given
+        val hostname = "localhost"
+        // When
+        val client = ClamavClient(hostname)
+        // Then
+        then(client.server).isEqualTo(InetSocketAddress(hostname, ClamavClient.DEFAULT_SERVER_PORT))
+        then(client.serverPlatform).isEqualTo(ClamavClient.DEFAULT_SERVER_PLATFORM)
+    }
+
+    @Test
+    fun `should create a ClamavClient for the given hostname and port`() {
+        // Given
+        val hostname = "localhost"
+        val port = 3311
+        // When
+        val client = ClamavClient(hostname, port)
+        // Then
+        then(client.server).isEqualTo(InetSocketAddress(hostname, port))
+        then(client.serverPlatform).isEqualTo(ClamavClient.DEFAULT_SERVER_PLATFORM)
+    }
+
+    @Test
+    fun `should create a ClamavClient for the given hostname and platform`() {
+        // Given
+        val hostname = "localhost"
+        val platform = Platform.UNIX
+        // When
+        val client = ClamavClient(hostname, platform)
+        // Then
+        then(client.server).isEqualTo(InetSocketAddress(hostname, ClamavClient.DEFAULT_SERVER_PORT))
+        then(client.serverPlatform).isEqualTo(platform)
+    }
+
+    @Test
+    fun `should create a ClamavClient for the hostname, port and platform`() {
+        // Given
+        val hostname = "localhost"
+        val port = 3311
+        val platform = Platform.UNIX
+        // When
+        val client = ClamavClient(hostname, port, platform)
+        // Then
+        then(client.server).isEqualTo(InetSocketAddress(hostname, port))
+        then(client.serverPlatform).isEqualTo(platform)
+    }
+
+    @Test
+    fun `should create a ClamavClient for the given socket address`() {
+        // Given
+        val socketAddress = InetSocketAddress("localhost", 3311)
+        // When
+        val client = ClamavClient(socketAddress)
+        // Then
+        then(client.server).isEqualTo(socketAddress)
+        then(client.serverPlatform).isEqualTo(ClamavClient.DEFAULT_SERVER_PLATFORM)
+    }
+
+    @Test
+    fun `should create a ClamavClient for the given socket address and platform`() {
+        // Given
+        val socketAddress = InetSocketAddress("localhost", 3311)
+        val platform = Platform.UNIX
+        // When
+        val client = ClamavClient(socketAddress, platform)
+        // Then
+        then(client.server).isEqualTo(socketAddress)
+        then(client.serverPlatform).isEqualTo(platform)
+    }
+}
