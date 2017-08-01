@@ -1,7 +1,6 @@
 package xyz.capybara.clamav
 
 import xyz.capybara.clamav.commands.*
-import xyz.capybara.clamav.commands.Shutdown
 import xyz.capybara.clamav.commands.scan.ContScan
 import xyz.capybara.clamav.commands.scan.InStream
 import xyz.capybara.clamav.commands.scan.MultiScan
@@ -111,13 +110,8 @@ class ClamavClient
      * @throws ClamavException Exception holding the real cause of malfunction
      */
     @Throws(ClamavException::class)
-    @JvmOverloads fun scan(path: Path, continueScan: Boolean = false): ScanResult {
-        if (continueScan) {
-            return sendCommand(ContScan(serverPlatform.toServerPath(path)))
-        } else {
-            return sendCommand(Scan(serverPlatform.toServerPath(path)))
-        }
-    }
+    @JvmOverloads fun scan(path: Path, continueScan: Boolean = false): ScanResult =
+            sendCommand(if (continueScan) ContScan(serverPlatform.toServerPath(path)) else Scan(serverPlatform.toServerPath(path)))
 
     /**
      * Scans a file/directory on the filesystem of the ClamAV daemon and will continue the scan to the end
