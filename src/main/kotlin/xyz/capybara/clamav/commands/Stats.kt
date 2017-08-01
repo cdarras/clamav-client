@@ -1,6 +1,6 @@
 package xyz.capybara.clamav.commands
 
-object Stats : Command<String>() {
+internal object Stats : Command<String>() {
     override val commandString: String
         get() = "STATS"
 

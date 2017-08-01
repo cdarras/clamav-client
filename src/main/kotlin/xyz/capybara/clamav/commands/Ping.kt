@@ -2,7 +2,7 @@ package xyz.capybara.clamav.commands
 
 import xyz.capybara.clamav.InvalidResponseException
 
-object Ping : Command<Unit>() {
+internal object Ping : Command<Unit>() {
     override val commandString: String
         get() = "PING"
 

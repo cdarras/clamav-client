@@ -2,7 +2,7 @@ package xyz.capybara.clamav.commands
 
 import xyz.capybara.clamav.InvalidResponseException
 
-object Reload : Command<Unit>() {
+internal object Reload : Command<Unit>() {
     override val commandString: String
         get() = "RELOAD"
 

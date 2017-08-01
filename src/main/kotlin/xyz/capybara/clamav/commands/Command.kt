@@ -10,7 +10,7 @@ import java.nio.ByteBuffer
 import java.nio.channels.SocketChannel
 import java.nio.charset.StandardCharsets
 
-abstract class Command<out T> {
+internal abstract class Command<out T> {
     abstract val commandString: String
 
     open fun send(server: InetSocketAddress): T {

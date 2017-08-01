@@ -1,11 +1,11 @@
 package xyz.capybara.clamav.commands.scan
 
-import xyz.capybara.clamav.commands.scan.result.ScanResult
-import xyz.capybara.clamav.commands.Command
 import xyz.capybara.clamav.InvalidResponseException
 import xyz.capybara.clamav.ScanFailureException
+import xyz.capybara.clamav.commands.Command
+import xyz.capybara.clamav.commands.scan.result.ScanResult
 
-abstract class ScanCommand : Command<ScanResult>() {
+internal abstract class ScanCommand : Command<ScanResult>() {
     private val RESPONSE_OK = Regex(
             "(.+) OK$",
             RegexOption.UNIX_LINES

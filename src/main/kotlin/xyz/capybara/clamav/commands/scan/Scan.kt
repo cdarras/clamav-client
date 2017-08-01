@@ -5,7 +5,7 @@ import xyz.capybara.clamav.commands.Command
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 
-class Scan(private val path: String) : ScanCommand() {
+internal class Scan(private val path: String) : ScanCommand() {
     override val commandString: String
         get() = "SCAN"
 

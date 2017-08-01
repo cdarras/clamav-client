@@ -1,6 +1,6 @@
 package xyz.capybara.clamav.commands
 
-object Version : Command<String>() {
+internal object Version : Command<String>() {
     override val commandString: String
         get() = "VERSION"
 

@@ -1,6 +1,6 @@
 package xyz.capybara.clamav.commands
 
-object Shutdown : Command<Unit>() {
+internal object Shutdown : Command<Unit>() {
     override val commandString: String
         get() = "SHUTDOWN"
 

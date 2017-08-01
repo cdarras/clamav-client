@@ -2,7 +2,7 @@ package xyz.capybara.clamav.commands
 
 import xyz.capybara.clamav.InvalidResponseException
 
-object VersionCommands : Command<Collection<String>>() {
+internal object VersionCommands : Command<Collection<String>>() {
     const private val COMMANDS_START_TAG = "| COMMANDS:"
 
     override val commandString: String

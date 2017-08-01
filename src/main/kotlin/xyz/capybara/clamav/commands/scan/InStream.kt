@@ -11,7 +11,7 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.channels.SocketChannel
 
-class InStream(private val inputStream: InputStream) : ScanCommand() {
+internal class InStream(private val inputStream: InputStream) : ScanCommand() {
     private val CHUNK_SIZE = 2048
 
     override val commandString: String
