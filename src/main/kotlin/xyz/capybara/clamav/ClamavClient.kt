@@ -12,16 +12,17 @@ import java.net.InetSocketAddress
 import java.nio.file.Path
 
 /**
- * Kotlin ClamAV Client
- */
-class ClamavClient
-/**
+ * Kotlin ClamAV client
+ *
+ * @constructor
  * Creates a ClamavClient which will connect to the ClamAV daemon on the given socket address running on the given platform.
  *
- * @param server         Server socket address (IP address and port or hostname and port)
- * @param serverPlatform Server platform (determines the file path separator to use when launching a file/directory scan on the server filesystem)
+ * @property server         Server socket address (IP address and port or hostname and port)
+ * @property serverPlatform Server platform (determines the file path separator to use when launching a file/directory scan on the server filesystem)
  */
-@JvmOverloads constructor(val server: InetSocketAddress,
+class ClamavClient
+@JvmOverloads
+constructor(val server: InetSocketAddress,
                           val serverPlatform: Platform = ClamavClient.DEFAULT_SERVER_PLATFORM) {
     /**
      * Creates a ClamavClient which will connect to the ClamAV daemon on the given hostname running on the given platform.
