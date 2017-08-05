@@ -138,7 +138,9 @@ class ClamavClient
     }
 
     companion object {
+        @JvmField
         val DEFAULT_SERVER_PORT = 3310
+        @JvmField
         val DEFAULT_SERVER_PLATFORM = Platform.JVM_PLATFORM
     }
 }
