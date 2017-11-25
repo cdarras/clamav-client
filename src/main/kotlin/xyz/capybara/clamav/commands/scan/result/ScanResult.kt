@@ -10,5 +10,5 @@ package xyz.capybara.clamav.commands.scan.result
  */
 sealed class ScanResult {
     object OK : ScanResult()
-    data class VirusFound(val foundViruses: Map<String, Collection<String>> = emptyMap()) : ScanResult()
+    data class VirusFound(val foundViruses: Map<String, Collection<String>>) : ScanResult()
 }
