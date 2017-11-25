@@ -12,7 +12,6 @@ import java.nio.ByteOrder
 import java.nio.channels.SocketChannel
 
 internal class InStream(private val inputStream: InputStream) : ScanCommand() {
-    private val CHUNK_SIZE = 2048
 
     override val commandString
         get() = "INSTREAM"
@@ -50,6 +49,9 @@ internal class InStream(private val inputStream: InputStream) : ScanCommand() {
         } catch (e: IOException) {
             throw CommunicationException(e)
         }
+    }
 
+    companion object {
+        private const val CHUNK_SIZE = 2048
     }
 }

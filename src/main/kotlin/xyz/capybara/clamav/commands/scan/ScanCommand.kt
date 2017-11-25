@@ -6,22 +6,6 @@ import xyz.capybara.clamav.commands.Command
 import xyz.capybara.clamav.commands.scan.result.ScanResult
 
 internal abstract class ScanCommand : Command<ScanResult>() {
-    private val RESPONSE_OK = Regex(
-            "(.+) OK$",
-            RegexOption.UNIX_LINES
-    )
-    private val RESPONSE_VIRUS_FOUND = Regex(
-            "(.+) FOUND$",
-            setOf(RegexOption.MULTILINE, RegexOption.UNIX_LINES)
-    )
-    private val RESPONSE_ERROR = Regex(
-            "(.+) ERROR",
-            RegexOption.UNIX_LINES
-    )
-    private val RESPONSE_VIRUS_FOUND_LINE = Regex(
-            "(.+: )?(.+): (.+) FOUND$",
-            RegexOption.UNIX_LINES
-    )
 
     override fun parseResponse(responseString: String): ScanResult {
         try {
@@ -43,5 +27,24 @@ internal abstract class ScanCommand : Command<ScanResult>() {
         } catch (e: IllegalStateException) {
             throw InvalidResponseException(responseString)
         }
+    }
+
+    companion object {
+        private val RESPONSE_OK = Regex(
+                "(.+) OK$",
+                RegexOption.UNIX_LINES
+        )
+        private val RESPONSE_VIRUS_FOUND = Regex(
+                "(.+) FOUND$",
+                setOf(RegexOption.MULTILINE, RegexOption.UNIX_LINES)
+        )
+        private val RESPONSE_ERROR = Regex(
+                "(.+) ERROR",
+                RegexOption.UNIX_LINES
+        )
+        private val RESPONSE_VIRUS_FOUND_LINE = Regex(
+                "(.+: )?(.+): (.+) FOUND$",
+                RegexOption.UNIX_LINES
+        )
     }
 }
