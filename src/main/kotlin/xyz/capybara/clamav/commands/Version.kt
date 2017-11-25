@@ -1,13 +1,11 @@
 package xyz.capybara.clamav.commands
 
 internal object Version : Command<String>() {
-    override val commandString: String
+    override val commandString
         get() = "VERSION"
 
-    override val format: Command.CommandFormat
+    override val format
         get() = Command.CommandFormat.NULL_CHAR
 
-    override fun parseResponse(responseString: String): String {
-        return responseString
-    }
+    override fun parseResponse(responseString: String) = responseString
 }

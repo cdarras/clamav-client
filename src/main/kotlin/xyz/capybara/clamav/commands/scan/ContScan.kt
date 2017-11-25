@@ -5,10 +5,10 @@ import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 
 internal class ContScan(private val path: String) : ScanCommand() {
-    override val commandString: String
+    override val commandString
         get() = "CONTSCAN"
 
-    override val format: Command.CommandFormat
+    override val format
         get() = Command.CommandFormat.NEW_LINE
 
     override val rawCommand: ByteBuffer

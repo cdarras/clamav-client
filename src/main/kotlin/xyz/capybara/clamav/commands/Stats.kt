@@ -1,11 +1,11 @@
 package xyz.capybara.clamav.commands
 
 internal object Stats : Command<String>() {
-    override val commandString: String
+    override val commandString
         get() = "STATS"
 
-    override val format: Command.CommandFormat
+    override val format
         get() = Command.CommandFormat.NEW_LINE
 
-    override fun parseResponse(responseString: String): String = responseString
+    override fun parseResponse(responseString: String) = responseString
 }

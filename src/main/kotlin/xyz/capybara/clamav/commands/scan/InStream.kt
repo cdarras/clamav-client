@@ -14,10 +14,10 @@ import java.nio.channels.SocketChannel
 internal class InStream(private val inputStream: InputStream) : ScanCommand() {
     private val CHUNK_SIZE = 2048
 
-    override val commandString: String
+    override val commandString
         get() = "INSTREAM"
 
-    override val format: Command.CommandFormat
+    override val format
         get() = Command.CommandFormat.NULL_CHAR
 
     override fun send(server: InetSocketAddress): ScanResult {

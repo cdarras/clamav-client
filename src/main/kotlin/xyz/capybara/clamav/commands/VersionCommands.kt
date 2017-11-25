@@ -3,12 +3,12 @@ package xyz.capybara.clamav.commands
 import xyz.capybara.clamav.InvalidResponseException
 
 internal object VersionCommands : Command<Collection<String>>() {
-    const private val COMMANDS_START_TAG = "| COMMANDS:"
+    private const val COMMANDS_START_TAG = "| COMMANDS:"
 
-    override val commandString: String
+    override val commandString
         get() = "VERSIONCOMMANDS"
 
-    override val format: Command.CommandFormat
+    override val format
         get() = Command.CommandFormat.NEW_LINE
 
     override fun parseResponse(responseString: String): Collection<String> {

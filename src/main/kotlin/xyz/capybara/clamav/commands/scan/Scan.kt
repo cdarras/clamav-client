@@ -6,10 +6,10 @@ import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 
 internal class Scan(private val path: String) : ScanCommand() {
-    override val commandString: String
+    override val commandString
         get() = "SCAN"
 
-    override val format: Command.CommandFormat
+    override val format
         get() = Command.CommandFormat.NULL_CHAR
 
     override val rawCommand: ByteBuffer
