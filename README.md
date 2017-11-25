@@ -15,7 +15,7 @@ Add this dependency to the `<dependencies>` section of your `pom.xml` file:
 <dependency>
     <groupId>xyz.capybara</groupId>
     <artifactId>clamav-client</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
 </dependency>
 ```
 
@@ -23,7 +23,7 @@ Add this dependency to the `<dependencies>` section of your `pom.xml` file:
 Add this dependency to the `dependencies` section of your `build.gradle` file:
 
 ```gradle
-compile 'xyz.capybara:clamav-client:2.0.0'
+compile 'xyz.capybara:clamav-client:2.0.1'
 ```
 
 ### Manually
