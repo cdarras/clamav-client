@@ -10,7 +10,7 @@ internal abstract class ScanCommand : Command<ScanResult>() {
     override fun parseResponse(responseString: String): ScanResult {
         try {
             return when {
-                RESPONSE_OK matches responseString -> ScanResult(ScanResult.Status.OK)
+                RESPONSE_OK matches responseString -> ScanResult.OK
                 RESPONSE_VIRUS_FOUND.containsMatchIn(responseString) -> {
                     // add every found viruses to the scan result, grouped by infected file
                     val foundViruses = responseString.split("\n".toRegex())
@@ -19,7 +19,7 @@ internal abstract class ScanCommand : Command<ScanResult>() {
                             // key: file path
                             // value: virus name
                             .groupBy({ it[1]!!.value }, { it[0]!!.value })
-                    ScanResult(ScanResult.Status.VIRUS_FOUND, foundViruses)
+                    ScanResult.VirusFound(foundViruses)
                 }
                 RESPONSE_ERROR matches responseString -> throw ScanFailureException(responseString)
                 else -> throw InvalidResponseException(responseString)
