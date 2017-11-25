@@ -45,7 +45,7 @@ internal abstract class Command<out T> {
         if (responseString == "UNKNOWN COMMAND") {
             throw UnknownCommandException(commandString)
         }
-        logger.debug("{} - Response: {}", commandString, responseString)
+        logger.debug { "$commandString - Response: $responseString" }
         return parseResponse(responseString)
     }
 

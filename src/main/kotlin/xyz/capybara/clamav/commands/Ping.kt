@@ -13,6 +13,6 @@ internal object Ping : Command<Unit>() {
         if (responseString != "PONG") {
             throw InvalidResponseException(responseString)
         }
-        logger.debug(responseString)
+        logger.debug { responseString }
     }
 }

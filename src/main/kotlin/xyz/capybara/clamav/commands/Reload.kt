@@ -13,6 +13,6 @@ internal object Reload : Command<Unit>() {
         if (responseString != "RELOADING") {
             throw InvalidResponseException(responseString)
         }
-        logger.info("Reloading the virus databases")
+        logger.info { "Reloading the virus databases" }
     }
 }
