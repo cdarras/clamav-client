@@ -20,7 +20,7 @@ import java.nio.file.Path
  * @property server         Server socket address (IP address and port or hostname and port)
  * @property serverPlatform Server platform (determines the file path separator to use when launching a file/directory scan on the server filesystem)
  */
-class ClamavClient
+open class ClamavClient
 @JvmOverloads
 constructor(val server: InetSocketAddress,
                           val serverPlatform: Platform = ClamavClient.DEFAULT_SERVER_PLATFORM) {
@@ -106,7 +106,7 @@ constructor(val server: InetSocketAddress,
      * even if a virus has been found, depending on the `continueScan` argument.
      *
      * @param path         absolute path to the file/directory on the filesystem of the ClamAV daemon
-     * @param continueScan continue the scan to the end even if the virus has been found
+     * @param continueScan continue the scan to the end even if a virus has been found
      * @return result of the scan
      * @throws ClamavException Exception holding the real cause of malfunction
      */
