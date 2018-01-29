@@ -15,7 +15,7 @@ Add this dependency to the `<dependencies>` section of your `pom.xml` file:
 <dependency>
     <groupId>xyz.capybara</groupId>
     <artifactId>clamav-client</artifactId>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
 </dependency>
 ```
 
@@ -23,7 +23,7 @@ Add this dependency to the `<dependencies>` section of your `pom.xml` file:
 Add this dependency to the `dependencies` section of your `build.gradle` file:
 
 ```gradle
-compile 'xyz.capybara:clamav-client:2.0.1'
+compile 'xyz.capybara:clamav-client:2.0.2'
 ```
 
 ### Manually
@@ -89,12 +89,31 @@ This method may improve performances on SMP systems by performing a multi-thread
 
 #### Scan result
 
-The `ScanResult` object returned by the scan commands is a holder for two informations:
+The `ScanResult` object returned by the scan commands can be of two types:
 
-1. The status of the scan: `OK` or `VIRUS_FOUND`
-2. Information about the found infected files as a map filled as following:
+1. `OK`: if no viruses have been found,
+2. `VirusFound`: if viruses have been found. Information about the infected files are stored in the `foundViruses` member map filled as following:
   - Key: infected file path
   - Value: list of viruses found in the file
+
+#### Usage of the scan result
+
+In Java:
+```java
+if (scanResult instanceof ScanResult.OK) {
+    // OK
+} else if (scanResult instanceof ScanResult.VirusFound) {
+    Map<String, Collection<String>> viruses = ((ScanResult.VirusFound) scanResult).getFoundViruses();
+}
+```
+
+The same code in Kotlin would be much more readable, thanks to the `when` keyword and the smart-casting ability of the language:
+```kotlin
+when (scanResult) {
+    is ScanResult.OK -> // OK
+    is ScanResult.VirusFound -> scanResult.foundViruses
+}
+```
 
 #### Admin commands
 
