@@ -10,6 +10,7 @@ import java.io.File
 import java.io.InputStream
 import java.net.InetSocketAddress
 import java.nio.file.Path
+import kotlin.jvm.Throws
 
 /**
  * Kotlin ClamAV client

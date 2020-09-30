@@ -29,7 +29,7 @@ internal class InStream(private val inputStream: InputStream) : ScanCommand() {
                 val length = ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
                 val data = ByteArray(CHUNK_SIZE)
                 var chunkSize = CHUNK_SIZE
-                while (chunkSize == CHUNK_SIZE) {
+                while (chunkSize != -1) {
                     chunkSize = inputStream.read(data)
                     if (chunkSize > 0) {
                         length.clear()

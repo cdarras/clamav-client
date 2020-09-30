@@ -9,6 +9,7 @@ import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.channels.SocketChannel
 import java.nio.charset.StandardCharsets
+import kotlin.jvm.Throws
 
 internal abstract class Command<out T> {
     abstract val commandString: String
