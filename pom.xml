@@ -31,7 +31,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.3.61</kotlin.version>
+        <kotlin.version>1.4.10</kotlin.version>
         <kotlin-logging.version>1.5.3</kotlin-logging.version>
         <slf4j.version>1.7.25</slf4j.version>
         <logback.version>1.2.3</logback.version>
