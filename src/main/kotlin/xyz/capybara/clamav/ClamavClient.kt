@@ -9,6 +9,8 @@ import xyz.capybara.clamav.commands.scan.result.ScanResult
 import java.io.File
 import java.io.InputStream
 import java.net.InetSocketAddress
+import java.net.SocketTimeoutException
+import java.nio.channels.spi.SelectorProvider
 import java.nio.file.Path
 
 /**
@@ -126,6 +128,27 @@ constructor(val server: InetSocketAddress,
     @Throws(ClamavException::class)
     fun parallelScan(path: Path): ScanResult = sendCommand(MultiScan(serverPlatform.toServerPath(path)))
 
+    /**
+     * Tries to connect to the ClamAV daemon until timeout expires.
+     *
+     * @param timeout the timeout value to be used in milliseconds.
+     * @return true if the ClamAV daemon could be reached before the timeout expires, false otherwise.
+     */
+    fun isReachable(timeout: Int) : Boolean {
+        return try {
+            // perform an independent socket connection with a connection timeout.
+            return SelectorProvider.provider().openSocketChannel().use {
+                it.configureBlocking(true)
+                it.socket().use { socket ->
+                    socket.connect(server, timeout)
+                    true
+                }
+            }
+        } catch (e: SocketTimeoutException) {
+            false
+        }
+    }
+
     @Throws(ClamavException::class)
     private fun <T> sendCommand(command: Command<T>): T {
         try {
@@ -139,8 +162,7 @@ constructor(val server: InetSocketAddress,
     }
 
     companion object {
-        @JvmField
-        val DEFAULT_SERVER_PORT = 3310
+        const val DEFAULT_SERVER_PORT = 3310
         @JvmField
         val DEFAULT_SERVER_PLATFORM = Platform.JVM_PLATFORM
     }
