@@ -7,6 +7,7 @@ import xyz.capybara.clamav.CommunicationException
 import java.io.IOException
 import java.io.InputStream
 import java.net.InetSocketAddress
+import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.channels.SocketChannel
@@ -32,16 +33,16 @@ internal class InStream(private val inputStream: InputStream) : ScanCommand() {
                 while (chunkSize != -1) {
                     chunkSize = inputStream.read(data)
                     if (chunkSize > 0) {
-                        length.clear()
-                        length.putInt(chunkSize).flip()
+                        (length as Buffer).clear()
+                        (length.putInt(chunkSize) as Buffer).flip()
                         // The format of the chunk is: '<length><data>'
                         it.write(length)
                         it.write(ByteBuffer.wrap(data, 0, chunkSize))
                     }
                 }
-                length.clear()
+                (length as Buffer).clear()
                 // Terminate the stream by sending a zero-length chunk
-                length.putInt(0).flip()
+                (length.putInt(0) as Buffer).flip()
                 it.write(length)
 
                 return readResponse(it)
