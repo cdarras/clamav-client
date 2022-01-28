@@ -10,7 +10,7 @@ internal class MultiScan(private val path: String) : ScanCommand() {
         get() = "MULTISCAN"
 
     override val format
-        get() = Command.CommandFormat.NEW_LINE
+        get() = CommandFormat.NEW_LINE
 
     override val rawCommand: ByteBuffer
         get() = ByteBuffer.wrap("${format.prefix}$commandString $path${format.terminator}".toByteArray(StandardCharsets.US_ASCII))

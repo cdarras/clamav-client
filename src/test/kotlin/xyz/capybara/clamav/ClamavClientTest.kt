@@ -1,10 +1,10 @@
 package xyz.capybara.clamav
 
-import org.junit.Test
 
 import java.net.InetSocketAddress
 
 import org.assertj.core.api.BDDAssertions.then
+import org.junit.jupiter.api.Test
 
 class ClamavClientTest {
 

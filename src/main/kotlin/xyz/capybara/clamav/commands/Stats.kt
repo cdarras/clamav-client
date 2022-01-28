@@ -5,7 +5,7 @@ internal object Stats : Command<String>() {
         get() = "STATS"
 
     override val format
-        get() = Command.CommandFormat.NEW_LINE
+        get() = CommandFormat.NEW_LINE
 
     override fun parseResponse(responseString: String) = responseString
 }

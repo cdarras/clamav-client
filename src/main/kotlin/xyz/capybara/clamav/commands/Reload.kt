@@ -7,7 +7,7 @@ internal object Reload : Command<Unit>() {
         get() = "RELOAD"
 
     override val format
-        get() = Command.CommandFormat.NULL_CHAR
+        get() = CommandFormat.NULL_CHAR
 
     override fun parseResponse(responseString: String) {
         if (responseString != "RELOADING") {

@@ -26,7 +26,7 @@ internal abstract class Command<out T> {
 
     protected abstract val format: CommandFormat
 
-    open protected val rawCommand: ByteBuffer
+    protected open val rawCommand: ByteBuffer
         get() = ByteBuffer.wrap("${format.prefix}$commandString${format.terminator}".toByteArray(StandardCharsets.US_ASCII))
 
     @Throws(IOException::class)

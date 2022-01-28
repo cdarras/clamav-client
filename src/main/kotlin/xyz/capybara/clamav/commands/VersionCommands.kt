@@ -9,11 +9,10 @@ internal object VersionCommands : Command<Collection<String>>() {
         get() = "VERSIONCOMMANDS"
 
     override val format
-        get() = Command.CommandFormat.NEW_LINE
+        get() = CommandFormat.NEW_LINE
 
     override fun parseResponse(responseString: String): Collection<String> {
-        val commandsStartPos = responseString.indexOf(COMMANDS_START_TAG)
-        return when (commandsStartPos) {
+        return when (val commandsStartPos = responseString.indexOf(COMMANDS_START_TAG)) {
             -1 -> throw InvalidResponseException(responseString)
             else -> responseString.substring(commandsStartPos + COMMANDS_START_TAG.length).split(" ".toRegex())
         }

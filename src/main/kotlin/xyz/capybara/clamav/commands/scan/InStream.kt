@@ -17,7 +17,7 @@ internal class InStream(private val inputStream: InputStream) : ScanCommand() {
         get() = "INSTREAM"
 
     override val format
-        get() = Command.CommandFormat.NULL_CHAR
+        get() = CommandFormat.NULL_CHAR
 
     override fun send(server: InetSocketAddress): ScanResult {
         try {

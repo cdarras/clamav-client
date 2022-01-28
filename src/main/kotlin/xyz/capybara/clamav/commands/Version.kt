@@ -5,7 +5,7 @@ internal object Version : Command<String>() {
         get() = "VERSION"
 
     override val format
-        get() = Command.CommandFormat.NULL_CHAR
+        get() = CommandFormat.NULL_CHAR
 
     override fun parseResponse(responseString: String) = responseString
 }

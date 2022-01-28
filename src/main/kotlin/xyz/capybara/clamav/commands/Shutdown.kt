@@ -5,7 +5,7 @@ internal object Shutdown : Command<Unit>() {
         get() = "SHUTDOWN"
 
     override val format
-        get() = Command.CommandFormat.NULL_CHAR
+        get() = CommandFormat.NULL_CHAR
 
     override fun parseResponse(responseString: String) = logger.info { "Shutting down the ClamAV server" }
 }
