@@ -1,4 +1,5 @@
-# Java ClamAV Client Library [![Build Status](https://travis-ci.org/cdarras/clamav-client.svg?branch=master)](https://travis-ci.org/cdarras/clamav-client) [![Maven Central](https://img.shields.io/maven-central/v/xyz.capybara/clamav-client.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22xyz.capybara%22%20AND%20a%3A%22clamav-client%22)
+# Java ClamAV Client Library
+[![Build Status](https://github.com/cdarras/clamav-client/actions/workflows/maven.yml/badge.svg?branch=master&event=push)](https://github.com/cdarras/clamav-client/actions/workflows/maven.yml) [![Maven Central](https://img.shields.io/maven-central/v/xyz.capybara/clamav-client.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22xyz.capybara%22%20AND%20a%3A%22clamav-client%22)
 
 A simple yet efficient Java client library for the [ClamAV antivirus](https://www.clamav.net/) daemon.
 
