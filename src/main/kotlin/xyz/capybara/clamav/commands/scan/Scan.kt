@@ -1,7 +1,5 @@
 package xyz.capybara.clamav.commands.scan
 
-import xyz.capybara.clamav.commands.Command
-
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 

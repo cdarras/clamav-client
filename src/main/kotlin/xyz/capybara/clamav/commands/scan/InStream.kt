@@ -1,6 +1,5 @@
 package xyz.capybara.clamav.commands.scan
 
-import xyz.capybara.clamav.commands.Command
 import xyz.capybara.clamav.commands.scan.result.ScanResult
 import xyz.capybara.clamav.CommunicationException
 
