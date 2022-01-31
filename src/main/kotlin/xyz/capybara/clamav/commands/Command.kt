@@ -49,7 +49,7 @@ internal abstract class Command<out T> {
         return parseResponse(responseString)
     }
 
-    private fun removeResponseTerminator(responseString: String) = responseString.substring(0, responseString.lastIndexOf(format.terminator))
+    private fun removeResponseTerminator(responseString: String) = responseString.substringBeforeLast(format.terminator)
 
     protected abstract fun parseResponse(responseString: String): T
 

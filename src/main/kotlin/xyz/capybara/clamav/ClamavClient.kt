@@ -8,6 +8,7 @@ import xyz.capybara.clamav.commands.scan.Scan
 import xyz.capybara.clamav.commands.scan.result.ScanResult
 import java.io.File
 import java.io.InputStream
+import java.net.ConnectException
 import java.net.InetSocketAddress
 import java.net.SocketTimeoutException
 import java.nio.channels.spi.SelectorProvider
@@ -25,7 +26,8 @@ import java.nio.file.Path
 open class ClamavClient
 @JvmOverloads
 constructor(val server: InetSocketAddress,
-                          val serverPlatform: Platform = ClamavClient.DEFAULT_SERVER_PLATFORM) {
+                          val serverPlatform: Platform = DEFAULT_SERVER_PLATFORM
+) {
     /**
      * Creates a ClamavClient which will connect to the ClamAV daemon on the given hostname running on the given platform.
      *
@@ -131,10 +133,10 @@ constructor(val server: InetSocketAddress,
     /**
      * Tries to connect to the ClamAV daemon until timeout expires.
      *
-     * @param timeout the timeout value to be used in milliseconds.
+     * @param timeout the timeout value to be used in milliseconds. (default: 3000ms)
      * @return true if the ClamAV daemon could be reached before the timeout expires, false otherwise.
      */
-    fun isReachable(timeout: Int) : Boolean {
+    fun isReachable(timeout: Int = 3000) : Boolean {
         return try {
             // perform an independent socket connection with a connection timeout.
             return SelectorProvider.provider().openSocketChannel().use {
@@ -145,6 +147,8 @@ constructor(val server: InetSocketAddress,
                 }
             }
         } catch (e: SocketTimeoutException) {
+            false
+        } catch (e: ConnectException) {
             false
         }
     }
