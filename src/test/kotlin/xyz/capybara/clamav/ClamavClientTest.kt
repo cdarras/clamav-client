@@ -17,6 +17,7 @@ class ClamavClientTest {
         // Then
         then(client.server).isEqualTo(InetSocketAddress(hostname, ClamavClient.DEFAULT_SERVER_PORT))
         then(client.serverPlatform).isEqualTo(ClamavClient.DEFAULT_SERVER_PLATFORM)
+        then(client.timeout).isEqualTo(ClamavClient.DEFAULT_TIMEOUT);
     }
 
     @Test
@@ -29,6 +30,7 @@ class ClamavClientTest {
         // Then
         then(client.server).isEqualTo(InetSocketAddress(hostname, port))
         then(client.serverPlatform).isEqualTo(ClamavClient.DEFAULT_SERVER_PLATFORM)
+        then(client.timeout).isEqualTo(ClamavClient.DEFAULT_TIMEOUT);
     }
 
     @Test
@@ -41,6 +43,7 @@ class ClamavClientTest {
         // Then
         then(client.server).isEqualTo(InetSocketAddress(hostname, ClamavClient.DEFAULT_SERVER_PORT))
         then(client.serverPlatform).isEqualTo(platform)
+        then(client.timeout).isEqualTo(ClamavClient.DEFAULT_TIMEOUT);
     }
 
     @Test
@@ -54,6 +57,7 @@ class ClamavClientTest {
         // Then
         then(client.server).isEqualTo(InetSocketAddress(hostname, port))
         then(client.serverPlatform).isEqualTo(platform)
+        then(client.timeout).isEqualTo(ClamavClient.DEFAULT_TIMEOUT);
     }
 
     @Test
@@ -65,6 +69,7 @@ class ClamavClientTest {
         // Then
         then(client.server).isEqualTo(socketAddress)
         then(client.serverPlatform).isEqualTo(ClamavClient.DEFAULT_SERVER_PLATFORM)
+        then(client.timeout).isEqualTo(ClamavClient.DEFAULT_TIMEOUT);
     }
 
     @Test
@@ -77,5 +82,20 @@ class ClamavClientTest {
         // Then
         then(client.server).isEqualTo(socketAddress)
         then(client.serverPlatform).isEqualTo(platform)
+        then(client.timeout).isEqualTo(ClamavClient.DEFAULT_TIMEOUT);
+    }
+
+    @Test
+    fun `should create a ClamavClient for the given socket address, platform and timeout`() {
+        // Given
+        val socketAddress = InetSocketAddress("localhost", 3311)
+        val platform = Platform.UNIX
+        val timeout = 500;
+        // When
+        val client = ClamavClient(socketAddress, platform, timeout)
+        // Then
+        then(client.server).isEqualTo(socketAddress)
+        then(client.serverPlatform).isEqualTo(platform)
+        then(client.timeout).isEqualTo(timeout);
     }
 }

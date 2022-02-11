@@ -13,11 +13,19 @@ import java.nio.charset.StandardCharsets
 internal abstract class Command<out T> {
     abstract val commandString: String
 
-    open fun send(server: InetSocketAddress): T {
+    open fun send(server: InetSocketAddress, timeout: Int): T {
         try {
-            SocketChannel.open(server).use {
-                it.write(rawCommand)
-                return readResponse(it)
+            SocketChannel.open().use {
+                if (timeout > -1) {
+                    it.socket().also {
+                        it.soTimeout = timeout
+                        it.connect(server, timeout)
+                    }
+                } else {
+                    it.connect(server)
+                }
+                it.write(rawCommand);
+                return readResponse(it);
             }
         } catch (e: IOException) {
             throw CommunicationException(e)
