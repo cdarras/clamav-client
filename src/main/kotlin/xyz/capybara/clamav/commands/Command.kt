@@ -27,21 +27,26 @@ internal abstract class Command<out T> {
     protected abstract val format: CommandFormat
 
     protected open val rawCommand: ByteBuffer
-        get() = ByteBuffer.wrap("${format.prefix}$commandString${format.terminator}".toByteArray(StandardCharsets.US_ASCII))
+        get() = ByteBuffer.wrap("${format.prefix}$commandString${format.terminator}".toByteArray(StandardCharsets.UTF_8))
 
     @Throws(IOException::class)
     protected fun readResponse(socketChannel: SocketChannel): T {
-        val responseStringBuilder = StringBuilder()
-        var rawResponsePart = ByteBuffer.allocate(32)
-        var read = socketChannel.read(rawResponsePart)
-        while (read > -1) {
-            var rawResponsePartString = String(rawResponsePart.array(), StandardCharsets.US_ASCII)
-            rawResponsePartString = rawResponsePartString.substring(0, read)
-            responseStringBuilder.append(rawResponsePartString)
-            rawResponsePart = ByteBuffer.allocate(32)
-            read = socketChannel.read(rawResponsePart)
+        var readByteBuffer = ByteBuffer.allocate(32)
+        var responseByteArray = ByteArray(0)
+
+        var readSize = socketChannel.read(readByteBuffer)
+        while (readSize > -1) {
+            var readByteArray = readByteBuffer.array()
+            if (readSize < 32) {
+                readByteArray = readByteArray.sliceArray(0 until readSize)
+            }
+            responseByteArray = responseByteArray.plus(readByteArray)
+
+            readByteBuffer = ByteBuffer.allocate(32)
+            readSize = socketChannel.read(readByteBuffer)
         }
-        val responseString = removeResponseTerminator(responseStringBuilder.toString())
+
+        val responseString = removeResponseTerminator(responseByteArray.decodeToString())
         if (responseString == "UNKNOWN COMMAND") {
             throw UnknownCommandException(commandString)
         }

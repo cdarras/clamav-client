@@ -11,5 +11,5 @@ internal class Scan(private val path: String) : ScanCommand() {
         get() = CommandFormat.NULL_CHAR
 
     override val rawCommand: ByteBuffer
-        get() = ByteBuffer.wrap("${format.prefix}$commandString $path${format.terminator}".toByteArray(StandardCharsets.US_ASCII))
+        get() = ByteBuffer.wrap("${format.prefix}$commandString $path${format.terminator}".toByteArray(StandardCharsets.UTF_8))
 }
