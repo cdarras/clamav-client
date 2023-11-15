@@ -22,11 +22,13 @@ import java.nio.file.Path
  *
  * @property server         Server socket address (IP address and port or hostname and port)
  * @property serverPlatform Server platform (determines the file path separator to use when launching a file/directory scan on the server filesystem)
+ * @property timeout        Socket timeout in milliseconds
  */
 open class ClamavClient
 @JvmOverloads
 constructor(val server: InetSocketAddress,
-                          val serverPlatform: Platform = DEFAULT_SERVER_PLATFORM
+            val serverPlatform: Platform = DEFAULT_SERVER_PLATFORM,
+            val timeout: Int = DEFAULT_TIMEOUT
 ) {
     /**
      * Creates a ClamavClient which will connect to the ClamAV daemon on the given hostname running on the given platform.
@@ -45,12 +47,14 @@ constructor(val server: InetSocketAddress,
      * @param serverHostname Server hostname
      * @param serverPort     Server port
      * @param serverPlatform Server platform (determines the file path separator to use when launching a file/directory scan on the server filesystem)
+     * @param timeout        Socket timeout in milliseconds
      */
     @JvmOverloads constructor(serverHostname: String,
                               serverPort: Int = DEFAULT_SERVER_PORT,
-                              serverPlatform: Platform = DEFAULT_SERVER_PLATFORM) : this(InetSocketAddress(serverHostname, serverPort), serverPlatform)
+                              serverPlatform: Platform = DEFAULT_SERVER_PLATFORM,
+                              timeout: Int = DEFAULT_TIMEOUT) : this(InetSocketAddress(serverHostname, serverPort), serverPlatform, timeout)
 
-    private val availableCommands: Collection<String> by lazy { VersionCommands.send(server) }
+    private val availableCommands: Collection<String> by lazy { VersionCommands.send(server, timeout) }
 
     /**
      * Pings the ClamAV daemon. If a correct response has been received, the method simply returns.
@@ -157,7 +161,7 @@ constructor(val server: InetSocketAddress,
     private fun <T> sendCommand(command: Command<T>): T {
         try {
             if (command.commandString in availableCommands) {
-                return command.send(server)
+                return command.send(server, timeout)
             }
             throw UnsupportedCommandException(command.commandString)
         } catch (cause: RuntimeException) {
@@ -169,6 +173,7 @@ constructor(val server: InetSocketAddress,
         const val DEFAULT_SERVER_PORT = 3310
         @JvmField
         val DEFAULT_SERVER_PLATFORM = Platform.JVM_PLATFORM
+        const val DEFAULT_TIMEOUT = -1
     }
 }
 
