@@ -99,11 +99,12 @@ constructor(val server: InetSocketAddress,
      * Scans an `InputStream` and sends a response as soon as a virus has been found.
      *
      * @param inputStream inputStream to scan
+     * @param chunkSize chunk size to use when sending the data to ClamAV. Default is {@value #InStream.DEFAULT_CHUNK_SIZE}
      * @return result of the scan
      * @throws ClamavException Exception holding the real cause of malfunction
      */
     @Throws(ClamavException::class)
-    fun scan(inputStream: InputStream): ScanResult = sendCommand(InStream(inputStream))
+    fun scan(inputStream: InputStream, chunkSize: Int = InStream.DEFAULT_CHUNK_SIZE): ScanResult = sendCommand(InStream(inputStream, chunkSize))
 
     /**
      * Scans a file/directory on the filesystem of the ClamAV daemon and may continue the scan to the end

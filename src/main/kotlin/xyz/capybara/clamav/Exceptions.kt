@@ -11,3 +11,6 @@ class ScanFailureException(responseString: String) : RuntimeException(String.for
 class UnknownCommandException(command: String) : RuntimeException(String.format("Unknown command: %s", command))
 
 class UnsupportedCommandException(command: String) : RuntimeException(String.format("Unsupported command: %s", command))
+
+class InvalidOptionValueException(command: String, option: String, detail: String)
+    : RuntimeException(String.format("Command: %s Option: %s %s", command, option, detail))
