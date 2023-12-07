@@ -3,9 +3,7 @@ package xyz.capybara.clamav
 import mu.KotlinLogging
 import org.assertj.core.api.BDDAssertions.then
 import org.assertj.core.data.MapEntry.entry
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.*
 import org.testcontainers.containers.BindMode
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
@@ -22,32 +20,44 @@ private val logger = KotlinLogging.logger {}
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Testcontainers
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 class ClamavClientIT {
 
-    @Container
-    private val clamavContainer = KGenericContainer("clamav/clamav")
-        .withLogConsumer { Slf4jLogConsumer(logger) }
-        .withClasspathResourceMapping(LOCAL_EICAR_PATH.pathString, SERVER_EICAR_PATH.pathString, BindMode.READ_ONLY)
-        .withClasspathResourceMapping(
-            LOCAL_EICAR_PATH.pathString,
-            SERVER_EICAR_COPY_PATH.pathString,
-            BindMode.READ_ONLY
-        )
-        .withClasspathResourceMapping(
-            LOCAL_SAFE_FILE_PATH.pathString,
-            SERVER_SAFE_FILE_PATH.pathString,
-            BindMode.READ_ONLY
-        )
-        .withExposedPorts(ClamavClient.DEFAULT_SERVER_PORT)
+    companion object {
+        const val EICAR_SIGNATURE = "Eicar-Signature"
+        val LOCAL_EICAR_PATH: Path = Paths.get("test-data", "eicar.txt")
+        val LOCAL_SAFE_FILE_PATH: Path = Paths.get("test-data", "safe-file.txt")
+        val SERVER_TMP_PATH: Path = Paths.get("/tmp")
+        val SERVER_EICAR_PATH: Path = SERVER_TMP_PATH.resolve(Paths.get("eicar.txt"))
+        val SERVER_EICAR_COPY_PATH: Path = SERVER_TMP_PATH.resolve(Paths.get("eicar_copy.txt"))
+        val SERVER_SAFE_FILE_PATH: Path = SERVER_TMP_PATH.resolve(Paths.get("safe-file.txt"))
 
-    private lateinit var clamavClient: ClamavClient
+        @Container
+        @JvmStatic
+        private val clamavContainer = KGenericContainer("clamav/clamav")
+            .withLogConsumer { Slf4jLogConsumer(logger) }
+            .withClasspathResourceMapping(LOCAL_EICAR_PATH.pathString, SERVER_EICAR_PATH.pathString, BindMode.READ_ONLY)
+            .withClasspathResourceMapping(
+                LOCAL_EICAR_PATH.pathString,
+                SERVER_EICAR_COPY_PATH.pathString,
+                BindMode.READ_ONLY
+            )
+            .withClasspathResourceMapping(
+                LOCAL_SAFE_FILE_PATH.pathString,
+                SERVER_SAFE_FILE_PATH.pathString,
+                BindMode.READ_ONLY
+            )
+            .withExposedPorts(ClamavClient.DEFAULT_SERVER_PORT)
 
-    @BeforeEach
-    fun initClamavClient() {
-        val clamavServerHost = clamavContainer.host
-        val clamavServerPort = clamavContainer.getMappedPort(ClamavClient.DEFAULT_SERVER_PORT)
+        @BeforeAll
+        @JvmStatic
+        fun initClamavClient() {
+            val clamavServerHost = clamavContainer.host
+            val clamavServerPort = clamavContainer.getMappedPort(ClamavClient.DEFAULT_SERVER_PORT)
+            clamavClient = ClamavClient(clamavServerHost, clamavServerPort)
+        }
 
-        clamavClient = ClamavClient(clamavServerHost, clamavServerPort)
+        private lateinit var clamavClient: ClamavClient
     }
 
     @Test
@@ -85,6 +95,7 @@ class ClamavClientIT {
     }
 
     @Test
+    @Order(Int.MAX_VALUE)
     fun `should be able to shut down a ClamAV server`() {
         assertDoesNotThrow {
             clamavClient.shutdownServer()
@@ -198,13 +209,5 @@ class ClamavClientIT {
 
     class KGenericContainer(imageName: String) : GenericContainer<KGenericContainer>(imageName)
 
-    companion object {
-        const val EICAR_SIGNATURE = "Eicar-Signature"
-        val LOCAL_EICAR_PATH: Path = Paths.get("test-data", "eicar.txt")
-        val LOCAL_SAFE_FILE_PATH: Path = Paths.get("test-data", "safe-file.txt")
-        val SERVER_TMP_PATH: Path = Paths.get("/tmp")
-        val SERVER_EICAR_PATH: Path = SERVER_TMP_PATH.resolve(Paths.get("eicar.txt"))
-        val SERVER_EICAR_COPY_PATH: Path = SERVER_TMP_PATH.resolve(Paths.get("eicar_copy.txt"))
-        val SERVER_SAFE_FILE_PATH: Path = SERVER_TMP_PATH.resolve(Paths.get("safe-file.txt"))
-    }
+
 }
