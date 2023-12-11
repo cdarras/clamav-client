@@ -16,7 +16,7 @@ Add this dependency to the `<dependencies>` section of your `pom.xml` file:
 <dependency>
     <groupId>xyz.capybara</groupId>
     <artifactId>clamav-client</artifactId>
-    <version>2.1.2</version>
+    <version>2.1.3</version>
 </dependency>
 ```
 
@@ -24,7 +24,7 @@ Add this dependency to the `<dependencies>` section of your `pom.xml` file:
 Add this dependency to the `dependencies` section of your `build.gradle` file:
 
 ```gradle
-compile 'xyz.capybara:clamav-client:2.1.2'
+compile 'xyz.capybara:clamav-client:2.1.3'
 ```
 
 ### Manually
@@ -64,10 +64,10 @@ By default, the chosen file separator will be the one of the platform your Java 
 #### Scan commands
 
 ```java
-ScanResult scan(InputStream inputStream)
+ScanResult scan(InputStream inputStream, Integer chunkSize)
 ```
 
-Scans an `InputStream` and sends a response as soon as a virus has been found.
+Scans an `InputStream` and sends a response as soon as a virus has been found. The `chunkSize` can be used to control the size of the chunk sent to ClamAV. Defaults to `2048` bytes
 
 ```java
 ScanResult scan(Path path)

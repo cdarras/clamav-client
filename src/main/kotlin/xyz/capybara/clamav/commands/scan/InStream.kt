@@ -2,6 +2,7 @@ package xyz.capybara.clamav.commands.scan
 
 import xyz.capybara.clamav.commands.scan.result.ScanResult
 import xyz.capybara.clamav.CommunicationException
+import xyz.capybara.clamav.InvalidOptionValueException
 
 import java.io.IOException
 import java.io.InputStream
@@ -11,13 +12,17 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.channels.SocketChannel
 
-internal class InStream(private val inputStream: InputStream) : ScanCommand() {
+internal class InStream(private val inputStream: InputStream,
+                        chunkSize : Int = DEFAULT_CHUNK_SIZE) : ScanCommand() {
 
     override val commandString
         get() = "INSTREAM"
 
     override val format
         get() = CommandFormat.NULL_CHAR
+
+    private val chunkSize = chunkSize.takeIf { it > 0 }
+        ?: throw InvalidOptionValueException(commandString, "chunkSize", "must be greater than 0")
 
     override fun send(server: InetSocketAddress): ScanResult {
         try {
@@ -27,8 +32,8 @@ internal class InStream(private val inputStream: InputStream) : ScanCommand() {
                 // ByteBuffer order must be big-endian ( == network byte order)
                 // It is, by default, but it doesn't hurt to set it anyway
                 val length = ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
-                val data = ByteArray(CHUNK_SIZE)
-                var chunkSize = CHUNK_SIZE
+                val data = ByteArray(chunkSize)
+                var chunkSize = chunkSize
                 while (chunkSize != -1) {
                     chunkSize = inputStream.read(data)
                     if (chunkSize > 0) {
@@ -52,6 +57,6 @@ internal class InStream(private val inputStream: InputStream) : ScanCommand() {
     }
 
     companion object {
-        private const val CHUNK_SIZE = 2048
+        const val DEFAULT_CHUNK_SIZE = 2048
     }
 }
