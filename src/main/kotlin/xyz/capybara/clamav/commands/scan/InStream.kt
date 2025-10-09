@@ -1,9 +1,8 @@
 package xyz.capybara.clamav.commands.scan
 
-import xyz.capybara.clamav.commands.scan.result.ScanResult
 import xyz.capybara.clamav.CommunicationException
 import xyz.capybara.clamav.InvalidOptionValueException
-
+import xyz.capybara.clamav.commands.scan.result.ScanResult
 import java.io.IOException
 import java.io.InputStream
 import java.net.InetSocketAddress
@@ -27,7 +26,8 @@ internal class InStream(private val inputStream: InputStream,
     override fun send(server: InetSocketAddress): ScanResult {
         try {
             SocketChannel.open(server).use {
-                it.write(rawCommand)
+                //TODO: original sending is a bit different see InStream
+                it.writeFully(rawCommand)
 
                 // ByteBuffer order must be big-endian ( == network byte order)
                 // It is, by default, but it doesn't hurt to set it anyway
@@ -40,14 +40,14 @@ internal class InStream(private val inputStream: InputStream,
                         (length as Buffer).clear()
                         (length.putInt(chunkSize) as Buffer).flip()
                         // The format of the chunk is: '<length><data>'
-                        it.write(length)
-                        it.write(ByteBuffer.wrap(data, 0, chunkSize))
+                        it.writeFully(length)
+                        it.writeFully(ByteBuffer.wrap(data, 0, chunkSize))
                     }
                 }
                 (length as Buffer).clear()
                 // Terminate the stream by sending a zero-length chunk
                 (length.putInt(0) as Buffer).flip()
-                it.write(length)
+                it.writeFully(length)
 
                 return readResponse(it)
             }
@@ -58,5 +58,15 @@ internal class InStream(private val inputStream: InputStream,
 
     companion object {
         const val DEFAULT_CHUNK_SIZE = 2048
+
+        private fun SocketChannel.writeFully(buffer: ByteBuffer) {
+            while (buffer.hasRemaining()) {
+                //if 0 nothing was written since the output buffer is full and the write has not progressed at all
+                //sleep to avoid spinning
+                if (write(buffer) == 0) {
+                    Thread.sleep(100L)
+                }
+            }
+        }
     }
 }

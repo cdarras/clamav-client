@@ -1,9 +1,6 @@
 package xyz.capybara.clamav.commands.scan
 
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.unmockkStatic
+import io.mockk.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -76,8 +73,15 @@ class InStreamTest {
 
         val bufferWrites = mutableListOf<ByteBuffer>()
         every { SocketChannel.open(any<SocketAddress>()) } returns mockk<SocketChannel> {
-            every { write(capture(bufferWrites)) } returns 0
+            every { write(capture(bufferWrites)) } answers {
+                firstArg<ByteBuffer>().run {
+                    val consumed = limit() - position() - 1
+                    position(consumed + 1)
+                    consumed
+                }
+            }
             every { read(any<ByteBuffer>()) } returns -1
+            every { close() } just Runs
         }
         return bufferWrites
     }
