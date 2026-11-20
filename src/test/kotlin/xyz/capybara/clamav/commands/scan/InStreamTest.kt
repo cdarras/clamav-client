@@ -13,6 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import xyz.capybara.clamav.InvalidOptionValueException
 import java.io.InputStream
+import java.net.InetSocketAddress
 import java.net.SocketAddress
 import java.nio.ByteBuffer
 import java.nio.channels.SocketChannel
@@ -39,7 +40,7 @@ class InStreamTest {
         val bufferWrites = prepareMocks(inputStream)
 
         //when
-        runCatching { command.send(mockk()) } //don't care about the exceptions
+        runCatching { command.send(InetSocketAddress("localhost", 3310)) } //don't care about the exceptions
 
         //then
         //1 write is the command, 2 write is the chunk size, 3rd write is the chunk
@@ -55,7 +56,7 @@ class InStreamTest {
         val bufferWrites = prepareMocks(inputStream)
 
         //when
-        runCatching { command.send(mockk()) } //don't care about the exceptions
+        runCatching { command.send(InetSocketAddress("localhost", 3310)) } //don't care about the exceptions
 
         //then
         //1 write is the command, 2 write is the chunk size, 3rd write is the chunk
@@ -75,10 +76,13 @@ class InStreamTest {
         every { inputStream.read(any()) } answers { firstArg<ByteArray>().size } andThen -1
 
         val bufferWrites = mutableListOf<ByteBuffer>()
-        every { SocketChannel.open(any<SocketAddress>()) } returns mockk<SocketChannel> {
+        val channel = mockk<SocketChannel> {
+            every { connect(any<SocketAddress>()) } returns true
             every { write(capture(bufferWrites)) } returns 0
             every { read(any<ByteBuffer>()) } returns -1
         }
+        every { SocketChannel.open() } returns channel
+        every { SocketChannel.open(any<SocketAddress>()) } returns channel
         return bufferWrites
     }
 }

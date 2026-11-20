@@ -22,11 +22,13 @@ import java.nio.file.Path
  *
  * @property server         Server socket address (IP address and port or hostname and port)
  * @property serverPlatform Server platform (determines the file path separator to use when launching a file/directory scan on the server filesystem)
+ * @property timeoutMillis  Socket timeout in milliseconds applied to connect and read of every command; [DEFAULT_TIMEOUT_MILLIS] keeps the previous unbounded behavior
  */
 open class ClamavClient
 @JvmOverloads
 constructor(val server: InetSocketAddress,
-                          val serverPlatform: Platform = DEFAULT_SERVER_PLATFORM
+                          val serverPlatform: Platform = DEFAULT_SERVER_PLATFORM,
+                          val timeoutMillis: Int = DEFAULT_TIMEOUT_MILLIS
 ) {
     /**
      * Creates a ClamavClient which will connect to the ClamAV daemon on the given hostname running on the given platform.
@@ -37,7 +39,7 @@ constructor(val server: InetSocketAddress,
      * @param serverHostname Server hostname
      * @param serverPlatform Server platform (determines the file path separator to use when launching a file/directory scan on the server filesystem)
      */
-    constructor(serverHostname: String, serverPlatform: Platform) : this(serverHostname, DEFAULT_SERVER_PORT, serverPlatform)
+    constructor(serverHostname: String, serverPlatform: Platform) : this(serverHostname, DEFAULT_SERVER_PORT, serverPlatform, DEFAULT_TIMEOUT_MILLIS)
 
     /**
      * Creates a ClamavClient which will connect to the ClamAV daemon on the given hostname and port running on the given platform.
@@ -45,12 +47,14 @@ constructor(val server: InetSocketAddress,
      * @param serverHostname Server hostname
      * @param serverPort     Server port
      * @param serverPlatform Server platform (determines the file path separator to use when launching a file/directory scan on the server filesystem)
+     * @param timeoutMillis  Socket timeout in milliseconds for connect and read of every command
      */
     @JvmOverloads constructor(serverHostname: String,
                               serverPort: Int = DEFAULT_SERVER_PORT,
-                              serverPlatform: Platform = DEFAULT_SERVER_PLATFORM) : this(InetSocketAddress(serverHostname, serverPort), serverPlatform)
+                              serverPlatform: Platform = DEFAULT_SERVER_PLATFORM,
+                              timeoutMillis: Int = DEFAULT_TIMEOUT_MILLIS) : this(InetSocketAddress(serverHostname, serverPort), serverPlatform, timeoutMillis)
 
-    private val availableCommands: Collection<String> by lazy { VersionCommands.send(server) }
+    private val availableCommands: Collection<String> by lazy { VersionCommands.send(server, timeoutMillis) }
 
     /**
      * Pings the ClamAV daemon. If a correct response has been received, the method simply returns.
@@ -158,7 +162,7 @@ constructor(val server: InetSocketAddress,
     private fun <T> sendCommand(command: Command<T>): T {
         try {
             if (command.commandString in availableCommands) {
-                return command.send(server)
+                return command.send(server, timeoutMillis)
             }
             throw UnsupportedCommandException(command.commandString)
         } catch (cause: RuntimeException) {
@@ -168,6 +172,8 @@ constructor(val server: InetSocketAddress,
 
     companion object {
         const val DEFAULT_SERVER_PORT = 3310
+        /** Default socket timeout: unbounded, i.e. the behavior of versions <= 2.1.2. */
+        const val DEFAULT_TIMEOUT_MILLIS = NO_TIMEOUT
         @JvmField
         val DEFAULT_SERVER_PLATFORM = Platform.JVM_PLATFORM
     }
