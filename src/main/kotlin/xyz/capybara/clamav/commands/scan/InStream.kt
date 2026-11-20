@@ -1,5 +1,6 @@
 package xyz.capybara.clamav.commands.scan
 
+import xyz.capybara.clamav.commands.connect
 import xyz.capybara.clamav.commands.scan.result.ScanResult
 import xyz.capybara.clamav.CommunicationException
 import xyz.capybara.clamav.InvalidOptionValueException
@@ -24,10 +25,11 @@ internal class InStream(private val inputStream: InputStream,
     private val chunkSize = chunkSize.takeIf { it > 0 }
         ?: throw InvalidOptionValueException(commandString, "chunkSize", "must be greater than 0")
 
-    override fun send(server: InetSocketAddress): ScanResult {
+    override fun send(server: InetSocketAddress, timeoutMillis: Int): ScanResult {
         try {
-            SocketChannel.open(server).use {
-                it.write(rawCommand)
+            SocketChannel.open().use { channel ->
+                channel.connect(server, timeoutMillis)
+                channel.write(rawCommand)
 
                 // ByteBuffer order must be big-endian ( == network byte order)
                 // It is, by default, but it doesn't hurt to set it anyway
@@ -40,16 +42,16 @@ internal class InStream(private val inputStream: InputStream,
                         (length as Buffer).clear()
                         (length.putInt(chunkSize) as Buffer).flip()
                         // The format of the chunk is: '<length><data>'
-                        it.write(length)
-                        it.write(ByteBuffer.wrap(data, 0, chunkSize))
+                        channel.write(length)
+                        channel.write(ByteBuffer.wrap(data, 0, chunkSize))
                     }
                 }
                 (length as Buffer).clear()
                 // Terminate the stream by sending a zero-length chunk
                 (length.putInt(0) as Buffer).flip()
-                it.write(length)
+                channel.write(length)
 
-                return readResponse(it)
+                return readResponse(channel)
             }
         } catch (e: IOException) {
             throw CommunicationException(e)

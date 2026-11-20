@@ -10,14 +10,31 @@ import java.nio.ByteBuffer
 import java.nio.channels.SocketChannel
 import java.nio.charset.StandardCharsets
 
+/** No timeout: blocking connect and read without SO_TIMEOUT (previous default behavior). */
+internal const val NO_TIMEOUT = -1
+
+/**
+ * Connects [this] channel to [server], bounded by [timeoutMillis] for both the connect and the
+ * read phase (SO_TIMEOUT on the blocking socket). With [NO_TIMEOUT] it behaves as before.
+ */
+internal fun SocketChannel.connect(server: InetSocketAddress, timeoutMillis: Int) {
+    if (timeoutMillis > 0) {
+        socket().soTimeout = timeoutMillis
+        socket().connect(server, timeoutMillis)
+    } else {
+        connect(server)
+    }
+}
+
 internal abstract class Command<out T> {
     abstract val commandString: String
 
-    open fun send(server: InetSocketAddress): T {
+    open fun send(server: InetSocketAddress, timeoutMillis: Int = NO_TIMEOUT): T {
         try {
-            SocketChannel.open(server).use {
-                it.write(rawCommand)
-                return readResponse(it)
+            SocketChannel.open().use { channel ->
+                channel.connect(server, timeoutMillis)
+                channel.write(rawCommand)
+                return readResponse(channel)
             }
         } catch (e: IOException) {
             throw CommunicationException(e)

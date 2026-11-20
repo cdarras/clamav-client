@@ -57,6 +57,28 @@ class ClamavClientTest {
     }
 
     @Test
+    fun `should create a ClamavClient with a socket timeout for connect and read`() {
+        // Given
+        val hostname = "localhost"
+        val port = 3311
+        val timeout = 500
+        // When
+        val client = ClamavClient(hostname, port, timeoutMillis = timeout)
+        // Then
+        then(client.server).isEqualTo(InetSocketAddress(hostname, port))
+        then(client.timeoutMillis).isEqualTo(timeout)
+    }
+
+    @Test
+    fun `should default to no socket timeout to keep the behavior of older versions`() {
+        // When
+        val client = ClamavClient("localhost")
+        // Then
+        then(client.timeoutMillis).isEqualTo(ClamavClient.DEFAULT_TIMEOUT_MILLIS)
+        then(client.timeoutMillis).isEqualTo(-1)
+    }
+
+    @Test
     fun `should create a ClamavClient for the given socket address`() {
         // Given
         val socketAddress = InetSocketAddress("localhost", 3311)
